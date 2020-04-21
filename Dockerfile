@@ -15,7 +15,6 @@ RUN pwd
 FROM ubuntu:18.04 AS generator
 RUN apt-get update && apt-get install -y --no-install-recommends gcc build-essential unzip curl
 WORKDIR /root
-RUN curl http://tigress.cs.arizona.edu/cgi-bin/projects/tigress/download.cgi?file=tigress-3.1-bin.zip
 
 COPY . .
 COPY --from=compiler /root/csmith/ ./csmith
