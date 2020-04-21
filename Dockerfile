@@ -16,7 +16,8 @@ FROM ubuntu:18.04 AS generator
 RUN apt-get update && apt-get install -y --no-install-recommends gcc build-essential unzip curl
 WORKDIR /root
 
-COPY . .
+COPY *.sh ./
+COPY tigress-3.1-bin.zip .
 COPY --from=compiler /root/csmith/ ./csmith
 RUN cp csmith/src/csmith /usr/bin/csmith
 
