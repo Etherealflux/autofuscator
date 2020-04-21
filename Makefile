@@ -5,3 +5,6 @@ run: build
 
 build:
 	docker build -t autofuscator:dev .
+
+clean:
+	rm -rf output
