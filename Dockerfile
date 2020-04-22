@@ -13,8 +13,11 @@ RUN cd csmith && ./configure && make -j8
 RUN pwd 
 
 FROM ubuntu:18.04 AS generator
-RUN apt-get update && apt-get install -y --no-install-recommends gcc build-essential unzip curl python3 python3-pip 
+RUN apt-get update && apt-get install -y --no-install-recommends gcc build-essential unzip curl python3 python3-pip libpthread-stubs0-dev
 WORKDIR /root
+
+COPY tigress-3.1-bin.zip .
+RUN unzip tigress-3.1-bin.zip
 
 COPY --from=compiler /root/csmith/ ./csmith
 RUN cp csmith/src/csmith /usr/bin/csmith
@@ -23,9 +26,10 @@ COPY ./python ./python
 RUN python3 -m pip install -r python/requirements.txt
 
 COPY *.sh ./
+COPY ./tigress-configs ./tigress-configs
 
-COPY tigress-3.1-bin.zip .
-RUN unzip tigress-3.1-bin.zip
+COPY ./sources ./sources
+COPY ./sample-programs ./sample-programs
 
 ENV CSMITH_HOME /root/csmith
 ENV CSMITH_RUNTIME ${CSMITH_HOME}/runtime

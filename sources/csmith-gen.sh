@@ -6,5 +6,5 @@ if [ -z ${1+x} ]
 then
     echo "Needs a filename"
 else
-    csmith | sed "s/static //g" > $1
+    csmith | sed "s/static //g" >> $1
 fi

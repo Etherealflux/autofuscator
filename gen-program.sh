@@ -1,17 +1,20 @@
-./csmith-gen.sh output/test.c
-gcc -I $CSMITH_RUNTIME output/test.c -o output/test
+./sources/$1 $(echo $2) output/test.c
+
+# Makes sure that Tigress has what it needs for things like
+# entropy-based opaque predicates
+
+mv output/test.c output/test.c.tmp
+echo -e "#include <time.h>\n#include <pthread.h>\n\n" > output/test.c
+cat output/test.c.tmp >> output/test.c
+rm output/test.c.tmp
+
+
+gcc -w -I $CSMITH_RUNTIME -O0 output/test.c -o output/test
 
 # The -D_Float128=double is needed because Tigress is having problems
 # with _Float128. It causes an error in mathcalls-helper-functions.h .
 # This will probably break anything that actually uses quad-size floats,
 # but I'm not sure anything really does...
 
-tigress \
---Environment=x86_64:Linux:Gcc:4.6 \
---Transform=Virtualize \
---Functions=main \
---VirtualizeDispatch=direct \
--I $CSMITH_RUNTIME \
--D_Float128=double \
---out=output/test-obfuscated.c output/test.c
-gcc output/test-obfuscated.c -o output/test-obfuscated
+./tigress-configs/$3.sh output/test.c output/test-obfuscated.c
+gcc -w output/test-obfuscated.c -o output/test-obfuscated
