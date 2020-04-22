@@ -1,10 +1,11 @@
 .PHONY: run build
+DOCKER=docker run --env ORIG_UID=`id -u` --env ORIG_GID=`id -g` --rm -v $(shell pwd)/output:/root/output
 
 run-gen: build
-	docker run --rm -v $(shell pwd)/output:/root/output autofuscator:dev bash gen-program.sh csmith-gen.sh "" insert-opaque
+	$(DOCKER) autofuscator:dev bash gen-program.sh csmith-gen.sh "" insert-opaque all-functions.sh ""
 
 run-hello: build
-	docker run --rm -v $(shell pwd)/output:/root/output autofuscator:dev bash gen-program.sh copy.sh "hello-world.c" insert-opaque
+	$(DOCKER) autofuscator:dev bash gen-program.sh copy.sh "hello-world.c" insert-opaque all-functions.sh ""
 
 build:
 	docker build -t autofuscator:dev .

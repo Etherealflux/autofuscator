@@ -8,7 +8,7 @@ tigress \
       --InitOpaqueCount=1 \
       --InitOpaqueStructs=list,array,env \
    --Transform=AddOpaque \
-      --Functions=/func_/ \
+      --Functions=$3 \
       --AddOpaqueKinds=call \
       --AddOpaqueCount=100 \
    $1 --out=$2

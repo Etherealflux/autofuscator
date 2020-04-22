@@ -1,3 +1,4 @@
+rm output/test.c
 ./sources/$1 $(echo $2) output/test.c
 
 # Makes sure that Tigress has what it needs for things like
@@ -16,5 +17,9 @@ gcc -w -I $CSMITH_RUNTIME -O0 output/test.c -o output/test
 # This will probably break anything that actually uses quad-size floats,
 # but I'm not sure anything really does...
 
-./tigress-configs/$3.sh output/test.c output/test-obfuscated.c
+./tigress-configs/$3.sh output/test.c output/test-obfuscated.c $(./pickers/$4 output/test $5)
 gcc -w output/test-obfuscated.c -o output/test-obfuscated
+
+chown $ORIG_UID:$ORIG_GID output/*
+
+echo `ls -la output`
