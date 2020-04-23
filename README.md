@@ -16,4 +16,12 @@ The Dockerfile expects `tigress-3.1-bin.zip` to be in the root of this project's
 
 ## Running
 
-`make run` will run a container that generates a random program, as well as an obfuscated version of it, in `./output/`. This will clobber existing output.
+Currently, four files are written to `/output`:
+
+- `test.c`, the unbofuscated source
+- `test`, the unobfuscated binary
+- `test-obfuscated.c`, the obfuscated source
+- `test-obfuscated`, the obfuscated binary
+
+`make run-hello` will read a basic hello-world program, `/sample-programs/hello-world.c`, and generate an obfuscated version.
+`make run-gen` will use CSmith to generate a random program.

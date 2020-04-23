@@ -23,7 +23,6 @@ COPY --from=compiler /root/csmith/ ./csmith
 RUN cp csmith/src/csmith /usr/bin/csmith
 
 COPY ./python ./python
-RUN python3 -m pip install -r python/requirements.txt
 
 COPY ./tigress-configs ./tigress-configs
 
