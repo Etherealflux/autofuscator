@@ -9,6 +9,6 @@ tigress \
       --InitOpaqueStructs=list,array,env \
    --Transform=AddOpaque \
       --Functions=$3 \
-      --AddOpaqueKinds=call \
-      --AddOpaqueCount=100 \
+      --AddOpaqueKinds=junk \
+      --AddOpaqueCount=1 \
    $1 --out=$2

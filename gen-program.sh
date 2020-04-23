@@ -1,25 +1,38 @@
-rm output/test.c
-./sources/$1 $(echo $2) output/test.c
+i=0
+iterations=$6
 
-# Makes sure that Tigress has what it needs for things like
-# entropy-based opaque predicates
+if [ -z $iterations ]
+then
+    iterations=1
+fi
 
-mv output/test.c output/test.c.tmp
-echo -e "#include <time.h>\n#include <pthread.h>\n\n" > output/test.c
-cat output/test.c.tmp >> output/test.c
-rm output/test.c.tmp
+chown $ORIG_UID:$ORIG_GID output/
 
+while [ $i -lt $iterations ]
+do
+    iterDir=$i
+    rm -rf output/$iterDir/
+    mkdir output/$iterDir
+    ./sources/$1 $(echo $2) output/$iterDir/clear.c
 
-gcc -w -I $CSMITH_RUNTIME -O0 output/test.c -o output/test
+    # Makes sure that Tigress has what it needs for things like
+    # entropy-based opaque predicates
 
-# The -D_Float128=double is needed because Tigress is having problems
-# with _Float128. It causes an error in mathcalls-helper-functions.h .
-# This will probably break anything that actually uses quad-size floats,
-# but I'm not sure anything really does...
+    mv output/$iterDir/clear.c output/$iterDir/clear.c.tmp
+    echo -e "#include <time.h>\n#include <pthread.h>\n\n" > output/$iterDir/clear.c
+    cat output/$iterDir/clear.c.tmp >> output/$iterDir/clear.c
+    rm output/$iterDir/clear.c.tmp
 
-./tigress-configs/$3.sh output/test.c output/test-obfuscated.c $(./pickers/$4 output/test $5)
-gcc -w output/test-obfuscated.c -o output/test-obfuscated
+    gcc -w -I $CSMITH_RUNTIME -O0 output/$iterDir/clear.c -o output/$iterDir/clear
 
-chown $ORIG_UID:$ORIG_GID output/*
+    # The -D_Float128=double is needed because Tigress is having problems
+    # with _Float128. It causes an error in mathcalls-helper-functions.h .
+    # This will probably break anything that actually uses quad-size floats,
+    # but I'm not sure anything really does...
 
-echo `ls -la output`
+    ./tigress-configs/$3.sh output/$iterDir/clear.c output/$iterDir/obfuscated.c $(./pickers/$4 output/$iterDir/clear $5)
+    gcc -w output/$iterDir/obfuscated.c -o output/$iterDir/obfuscated
+
+    chown -R $ORIG_UID:$ORIG_GID output/$iterDir/
+    i=$((i + 1))
+done
